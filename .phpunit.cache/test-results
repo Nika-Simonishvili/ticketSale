@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"Tests\\Feature\\Event\\EventTest::test_it_should_throw_unauthorized":0.018,"Feature\\Auth\\AuthTest::test_it_throws_unauthorized":0.017,"Feature\\Auth\\AuthTest::test_it_throws_validation_when_register#only-email":0.017,"Feature\\Auth\\AuthTest::test_it_throws_validation_when_register#empty-firstname":0.01}}
