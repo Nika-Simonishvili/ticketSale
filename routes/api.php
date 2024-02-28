@@ -52,7 +52,7 @@ Route::middleware('auth:sanctum')
 
                 Route::patch('cancel/{booking}', 'cancelBooking');
 
-                // Those callback routes should be your frontend URLs, for sake of API i removed middlewares.
+                // Those callback routes should be your frontend URLs, for sake of API i removed middlewares
                 Route::get('/callback/success', 'checkoutSuccess')
                     ->withoutMiddleware('auth:sanctum')
                     ->name('checkout.success');
