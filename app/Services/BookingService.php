@@ -11,7 +11,6 @@ use App\Notifications\SuccessCheckoutNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Stripe\Checkout\Session;
-use Stripe\StripeClient;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BookingService
@@ -19,6 +18,7 @@ class BookingService
     public function __construct(
         private readonly BookingRepositoryContract $bookingRepository,
         private readonly OrderRepositoryContract $orderRepository,
+        private readonly TicketService $ticketService,
         private readonly StripeService $stripeService,
     ) {
     }
@@ -54,6 +54,7 @@ class BookingService
             throw_if(! $order, new NotFoundHttpException('Order with this session id was not found.'));
 
             $this->bookingRepository->handleModelsUpdatesForSuccessCheckout($order);
+            $this->ticketService->generateQr($order->tickets);
 
             Notification::send($order->booking->user, new SuccessCheckoutNotification($order));
         } catch (NotFoundHttpException $exception) {

@@ -12,6 +12,8 @@ interface OrderRepositoryContract
 
     public function attachTicketsToOrder(Order $order, Collection $tickets): void;
 
+    public function detachTicketsToOrder(Order $order): void;
+
     public function find(int $id): Order;
 
     public function findOrderWithSessionId(string $sessionId): ?Order;

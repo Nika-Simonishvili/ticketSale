@@ -3,13 +3,12 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function test_it_throws_unauthorized(): void
     {
         $response = $this->deleteJson(self::API_URL.'auth/logout');
@@ -53,9 +52,7 @@ class LoginTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function test_it_logs_in_user(): void
     {
         $userData = ['email' => 'test@gmail.com', 'password' => 'password'];

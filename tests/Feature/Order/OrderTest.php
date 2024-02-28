@@ -6,13 +6,12 @@ use App\Enums\OrderStatus;
 use App\Models\Event;
 use App\Models\Order;
 use App\Models\Ticket;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OrderTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function test_it_stores_order(): void
     {
         $this->login();
@@ -61,9 +60,7 @@ class OrderTest extends TestCase
         $this->assertDatabaseCount('order_ticket', 1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function test_cant_cancel_success_order(): void
     {
         $this->login();
@@ -76,9 +73,7 @@ class OrderTest extends TestCase
         $response->assertJsonFragment(['message' => 'Can not cancel order, it`s completed.']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function test_order_cancel(): void
     {
         $this->login();

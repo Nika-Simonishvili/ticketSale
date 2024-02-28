@@ -3,13 +3,12 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class RegisterTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function test_it_throws_unauthorized(): void
     {
         $response = $this->deleteJson(self::API_URL.'auth/logout');
@@ -52,9 +51,7 @@ class RegisterTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function test_it_registers_user(): void
     {
         $password = fake()->password;

@@ -8,13 +8,12 @@ use App\Models\Booking;
 use App\Models\Order;
 use App\Services\StripeService;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class BookingTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function test_it_creates_booking(): void
     {
         $this->login();
@@ -25,7 +24,7 @@ class BookingTest extends TestCase
             $mock->shouldReceive('createBooking')->once();
         });
 
-        $response = $this->postJson(self::API_URL . 'booking/checkout', ['orderId' => $order->id]);
+        $response = $this->postJson(self::API_URL.'booking/checkout', ['orderId' => $order->id]);
 
         $response->assertOk();
         $response->assertJsonFragment(['success' => true]);
@@ -34,14 +33,12 @@ class BookingTest extends TestCase
             'bookings',
             [
                 'order_id' => $order->id,
-                'status'   => BookingStatus::PENDING,
+                'status' => BookingStatus::PENDING,
             ]
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function test_successful_checkout(): void
     {
         \Notification::fake();
@@ -57,7 +54,7 @@ class BookingTest extends TestCase
                 ->once();
         });
 
-        $response = $this->getJson(self::API_URL . 'booking/callback/success?session_id=' . $sessionId);
+        $response = $this->getJson(self::API_URL.'booking/callback/success?session_id='.$sessionId);
 
         $response->assertOk();
         $response->assertExactJson(

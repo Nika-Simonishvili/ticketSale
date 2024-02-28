@@ -38,6 +38,9 @@ class OrderService
     {
         abort_if($order->status === OrderStatus::SUCCESS->value, 403, 'Can not cancel order, it`s completed.');
 
-        $this->orderRepository->cancel($order);
+        \DB::transaction(function () use ($order) {
+            $this->orderRepository->cancel($order);
+            $this->orderRepository->detachTicketsToOrder($order);
+        });
     }
 }

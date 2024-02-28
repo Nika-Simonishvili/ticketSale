@@ -24,9 +24,7 @@ class SuccessCheckoutNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line("Ypu have successfully purchased tickets for {$this->order->event->title}")
-            ->line("tickets: {$this->order->tickets->pluck('seat_number')}")
-            ->line('Thank you for using our application!');
+            ->view('mail.success_checkout', ['order' => $this->order]);
     }
 
     public function toArray(object $notifiable): array

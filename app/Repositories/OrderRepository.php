@@ -31,6 +31,14 @@ class OrderRepository implements OrderRepositoryContract
         });
     }
 
+    public function detachTicketsToOrder(Order $order): void
+    {
+        $order->tickets->each(function (Ticket $ticket) {
+            $ticket->update(['available' => true]);
+        });
+        $order->tickets()->detach();
+    }
+
     public function find(int $id): Order
     {
         return Order::with('tickets')->find($id);
@@ -51,9 +59,7 @@ class OrderRepository implements OrderRepositoryContract
 
     public function cancel(Order $order): void
     {
-        \DB::transaction(function () use ($order) {
-            $order->tickets()->detach();
-            $order->update(['status' => OrderStatus::CANCEL]);
-        });
+        $order->event->increment('available_tickets_quantity', $order->tickets()->count());
+        $this->update($order, ['status' => OrderStatus::CANCEL]);
     }
 }

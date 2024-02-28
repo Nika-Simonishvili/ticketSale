@@ -6,13 +6,12 @@ use App\Models\Event;
 use App\Models\Ticket;
 use Illuminate\Http\UploadedFile;
 use Maatwebsite\Excel\Facades\Excel;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class TicketTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function teest_it_shows_available_tickets_for_event(): void
     {
         $this->login();
@@ -29,9 +28,7 @@ class TicketTest extends TestCase
         $response->assertJsonCount($availableTicketCount, 'tickets');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function test_ticket_import()
     {
         Excel::fake();

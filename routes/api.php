@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')
                 Route::get('/', 'index');
                 Route::get('/{event}', 'show');
                 Route::post('/', 'store');
+                Route::patch('/{event}', 'update');
                 Route::get('/available-tickets/{event}', 'availableTickets');
                 Route::delete('/{event}', 'destroy');
             });

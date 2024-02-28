@@ -12,4 +12,9 @@ class TicketRepository implements TicketRepositoryContract
     {
         return Ticket::with('event')->whereIn('id', $ids)->get();
     }
+
+    public function update(Ticket $ticket, array $data): Ticket
+    {
+        return tap($ticket)->update($data);
+    }
 }

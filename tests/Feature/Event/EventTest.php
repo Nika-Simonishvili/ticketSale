@@ -4,13 +4,13 @@ namespace Tests\Feature\Event;
 
 use App\Models\Event;
 use App\Models\EventCategory;
+use App\Models\Ticket;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class EventTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function test_it_should_throw_unauthorized(): void
     {
         $response = $this->postJson(self::API_URL.'events');
@@ -66,9 +66,53 @@ class EventTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    public function test_it_creates_event(): void
+    {
+        $this->login();
+        $eventCategory = EventCategory::factory()->create();
+        $eventTitle = fake()->title;
+
+        $data = [
+            'title' => $eventTitle,
+            'start_date_time' => now()->addDay()->format('Y-m-d H:i'),
+            'address' => fake()->address,
+            'tickets_quantity' => 10,
+            'available_tickets_quantity' => 10,
+            'event_category_id' => $eventCategory->id,
+        ];
+
+        $response = $this->postJson(self::API_URL.'events', $data);
+
+        $response->assertOk();
+        $this->assertDatabaseCount('events', 1);
+        $this->assertDatabaseHas('events', ['title' => $eventTitle]);
+    }
+
+    #[Test]
+    public function test_it_updates_event(): void
+    {
+        $this->login();
+        $event = Event::factory()->create();
+        $eventCategory = EventCategory::factory()->create();
+        $updatedTitle = fake()->title;
+
+        $data = [
+            'title' => $updatedTitle, 'start_date_time' => now()->addDay()->format('Y-m-d H:i'),
+            'address' => fake()->address,
+            'tickets_quantity' => 10,
+            'available_tickets_quantity' => 10,
+            'event_category_id' => $eventCategory->id,
+        ];
+
+        $response = $this->patchJson(self::API_URL.'events/'.$event->id, $data);
+
+        $response->assertOk();
+        $this->assertDatabaseCount('events', 1);
+        $this->assertDatabaseHas('events', ['title' => $updatedTitle]);
+    }
+
+    #[Test]
     public function test_it_shows_events_list(): void
     {
         $this->login();
@@ -90,9 +134,48 @@ class EventTest extends TestCase
         $this->assertDatabaseHas('events', $events->first()->toArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    public function test_it_shows_single_event(): void
+    {
+        $this->login();
+        $event = Event::factory()->create();
+
+        $response = $this->getJson(self::API_URL."events/{$event->id}");
+
+        $response->assertOk();
+        $response->assertJsonStructure(
+            [
+                'success',
+                'event',
+            ],
+        );
+        $this->assertDatabaseCount('events', 1);
+        $this->assertDatabaseHas('events', $event->toArray());
+    }
+
+    #[Test]
+    public function test_it_shows_available_tickets_for_event(): void
+    {
+        $this->login();
+        $event = Event::factory()->create();
+        Ticket::factory()->times(2)->create(['event_id' => $event->id, 'available' => true]);
+        Ticket::factory()->times(1)->create(['event_id' => $event->id, 'available' => false]);
+
+        $response = $this->getJson(self::API_URL."events/available-tickets/{$event->id}");
+
+        $response->assertOk();
+        $response->assertJsonStructure(
+            [
+                'success',
+                'tickets',
+            ],
+        );
+
+        $this->assertCount(2, $response['tickets']);
+        $this->assertEquals(2, Ticket::where('available', true)->count());
+    }
+
+    #[Test]
     public function test_it_deletes_event(): void
     {
         $this->login();
