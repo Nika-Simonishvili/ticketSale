@@ -1,0 +1,11 @@
+/.phpunit.cache
+/public/storage
+/vendor
+/.env
+/.env.testing
+.phpunit.result.cache
+/.idea
+/.fleet
+.phpstorm.meta.php
+_ide_helper.php
+*.log
