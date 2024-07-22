@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TicketType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,13 @@ class Ticket extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    protected function casts(): array
+    {
+        return [
+            'type' => TicketType::class,
+        ];
+    }
 
     public function event(): BelongsTo
     {

@@ -34,9 +34,6 @@ class BookingRepository implements BookingRepositoryContract
                 $ticket->update(['available' => true]);
             });
 
-            $ticketsSumPrice = $bookingTickets->sum('price');
-            $booking->order->event->decrement('total_income', $ticketsSumPrice);
-
             $booking->order->tickets()->detach();
             $booking->order()->delete();
             $booking->delete();

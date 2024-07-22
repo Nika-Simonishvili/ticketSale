@@ -69,6 +69,8 @@ class BookingService
 
     public function cancelBooking(Booking $booking): void
     {
+        // TODO add validations
+
         $booking->load(['user', 'order.tickets']);
         $user = $booking->user;
 

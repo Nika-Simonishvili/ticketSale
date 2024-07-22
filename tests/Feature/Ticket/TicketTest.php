@@ -33,7 +33,6 @@ class TicketTest extends TestCase
     {
         Excel::fake();
         $this->login();
-
         $event = Event::factory()->create();
         $file = UploadedFile::fake()->create(base_path('tests/Fixtures/tickets_test.xlsx'));
 

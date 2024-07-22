@@ -15,7 +15,7 @@ class TicketsImport implements ToCollection, WithCalculatedFormulas, WithHeading
     {
     }
 
-    public function collection(Collection $collection)
+    public function collection(Collection $collection): void
     {
         abort_if($collection->count() !== $this->event->tickets_quantity, 422, 'invalid tickets quantity');
 

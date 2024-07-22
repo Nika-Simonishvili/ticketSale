@@ -7,7 +7,8 @@ use App\Enums\OrderStatus;
 use App\Models\Booking;
 use App\Models\Order;
 use App\Services\StripeService;
-use Mockery\MockInterface;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -20,9 +21,8 @@ class BookingTest extends TestCase
 
         $order = Order::factory()->create(['status' => OrderStatus::PENDING->value]);
 
-        $this->partialMock(StripeService::class, function (MockInterface $mock) {
-            $mock->shouldReceive('createBooking')->once();
-        });
+        $mock = $this->mock(StripeService::class);
+        $mock->shouldReceive('createBooking')->once();
 
         $response = $this->postJson(self::API_URL.'booking/checkout', ['orderId' => $order->id]);
 
@@ -41,18 +41,17 @@ class BookingTest extends TestCase
     #[Test]
     public function test_successful_checkout(): void
     {
-        \Notification::fake();
+        Notification::fake();
         $this->login();
 
-        $sessionId = \Str::random();
+        $sessionId = Str::random();
         $order = Order::factory()->create(['session_id' => $sessionId]);
         Booking::factory()->create(['order_id' => $order->id]);
 
-        $this->partialMock(StripeService::class, function (MockInterface $mock) use ($sessionId) {
-            $mock->shouldReceive('retrieveSession')
-                ->with($sessionId)
-                ->once();
-        });
+        $mock = $this->mock(StripeService::class);
+        $mock->shouldReceive('retrieveSession')
+            ->with($sessionId)
+            ->once();
 
         $response = $this->getJson(self::API_URL.'booking/callback/success?session_id='.$sessionId);
 
